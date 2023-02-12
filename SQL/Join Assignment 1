@@ -1,4 +1,85 @@
--- Assignment of Creating 11 Tables and Creating a Master Table.
+-- In the practical business use cases, you won't just retrive data from one table, rather you would be using
+-- multiple tables to extract the data for that reason you would be using Joins
+
+Use DEMO_DATABSE;
+
+
+-- Inner Join
+
+CREATE OR REPLACE TABLE Cows_1 (C_number int, C_Breed varchar(40));
+
+INSERT INTO Cows_1(C_number,C_Breed) VALUES (1,'Holstein'),(2,'Guernsey'),(3,'Angus'),(4,'Mou'),(5,'Honey');
+
+Select * from Cows_1;
+
+CREATE OR REPLACE TABLE Cows_2 (C_number int, C_Vareity varchar(40));
+
+INSERT INTO Cows_2(C_number,C_Vareity) VALUES (2,'Jersey'),(3,'Brownswiss'),(4,'Ayrishire');
+
+Select c1.*,c2.C_Vareity from Cows_1 as c1 inner join Cows_2 as c2 on c1.C_number=c2.C_number;
+
+-- Creating PETs and Owners Table
+
+CREATE OR REPLACE TABLE SN_OWNER
+(
+   OwnerID INTEGER NOT NULL PRIMARY KEY ,
+   Name VARCHAR2(20),
+   Surname STRING,
+   StreetAddress VARCHAR2(50),
+   City STRING,
+   State CHAR(4),
+   StateFull STRING,
+   ZipCode INTEGER
+);
+
+CREATE OR REPLACE TABLE SN_PETS
+(
+    PetID VARCHAR(10) NOT NULL PRIMARY KEY,
+    Name VARCHAR(20),
+    Kind STRING,
+    Gender CHAR(7),
+    Age INTEGER,
+    OwnerID INTEGER NOT NULL REFERENCES OWNER 
+);
+
+Select * from SN_OWNER;
+Select * from SN_PETS;
+
+-- CREATE A TABLE USING OWNERS AND PETS CONTAINING OWNERS THOSE HAVING PETS
+Select SN_OWNER.OwnerID,SN_OWNER.Name,SN_PETS.PetID,SN_PETS.Name,SN_PETS.Kind from SN_OWNER INNER JOIN SN_PETS  ON SN_OWNER.OwnerID = SN_PETS.OwnerID;
+
+
+--- CREATE MASTER TABLE WHERE NO DUPLICATE COLUMN SOULD BE REPEATED
+
+CREATE OR REPLACE TABLE SN_OWNER_PETS AS Select SN_OWNER.*,SN_PETS.PetID,SN_PETS.Name as Pet_Name,SN_PETS.Kind,SN_PETS.Gender,SN_PETS.Age from SN_OWNER INNER JOIN SN_PETS ON SN_OWNER.OwnerID = SN_PETS.OwnerID
+
+Select * from SN_OWNER_PETS;
+
+
+---- LEFT OUTER JOIN
+
+-- In the case if I want to see all the owner whether they having Pet or not, In that case we use Left outer join
+-- which gives all records from left table and 
+
+-- Business use case - A campaign was lunched in christmas month to do more shopping to earn more revenue, if you buy TV
+-- get 10% on fride.
+
+ -- In this I want to get the data of all customers and the associate revenue of those customers
+ -- and what about those customers did an enquiry and didn't buy anything, during the campgain I want to know how many customers
+ -- did the transaction and the one who didn't.
+ 
+ --- Interviwe questio - how the left will be selected, Ans - the records which has max number of records
+ 
+ Select Count(*) from SN_OWNER_PETS;
+ 
+CREATE OR REPLACE TABLE SN_OWNER_PETS AS Select SN_OWNER.*,SN_PETS.PetID,SN_PETS.Name as Pet_Name,SN_PETS.Kind,SN_PETS.Gender,SN_PETS.Age from SN_OWNER LEFT JOIN SN_PETS ON SN_OWNER.OwnerID = SN_PETS.OwnerID;
+ 
+ -- 
+ 
+ Select c1.*,c2.C_Vareity from Cows_1 as c1 Left join Cows_2 as c2 on c1.C_number=c2.C_number;
+
+ 
+ -- Assignment of Creating 11 Tables and Creating a Master Table.
  
  -- Creating Brokers Table
  
@@ -96,8 +177,8 @@ Select * from State_Status;
 Create or Replace Table Complaints_1 as Select Compalaints.*,State_Status.Name,State_Status.Country,State_Status.State_Code,State_Status.State,State_Status.Type,
 State_Status.Latitude,State_Status.Longitude,State_Status.Area_Code,State_Status.Population,State_Status.Households,
 State_Status.Median_Income,State_Status.Land_Area,State_Status.Water_Area,State_Status.Time_Zone,
-State_Status.Region,State_Status.Description
-from Compalaints Left Join State_Status ON Compalaints.ID = State_Status.ID;
+State_Status.Region,State_Status.Description as Status_Description
+from Compalaints Left Join State_Status ON Compalaints.ComplainStatusID = State_Status.ID;
 
 Select * from Complaints_1;
 

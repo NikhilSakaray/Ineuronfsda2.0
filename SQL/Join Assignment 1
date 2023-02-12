@@ -1,6 +1,4 @@
--- Assignment of Creating 11 Tables and Creating a Master Table.
- 
- -- Creating Brokers Table
+-- Creating Brokers Table
  
 Create or Replace Table BROKERS (BrokerID VARCHAR(10),BrokerCode VARCHAR(20),BrokerFullName CHAR(40),DistributionNetwork CHAR(40),DistributionChannel CHAR(40),CommissionScheme VARCHAR(30));
 
@@ -69,6 +67,12 @@ Create or Replace Table Compalaints(ID int,ComplainDate date,CompletionDate date
                                    
 Select * from Compalaints;
 
+-- Creating Status_History Table
+
+Create or Replace Table Status_History(ID int,ComplaintID int,ComplaintStatusID	 int,StatusDate date);
+
+Select * from Status_History;
+
 -- Creating Master Table from all 11 Tables
 
 Select * from Regions;
@@ -111,7 +115,8 @@ Create or Replace Table MasterTable_Complaints as Select Complaints_1.*,Brokers.
  Customers.LastName,Customers.FirstName,Customers.BirthDate,Customers.Gender,
  Customers.ParticipantType,Customers.RegionID,Customers.MaritalStatus,
  Products.ProductCategory,Products.ProductSubCategory,Products.Product,Priority.Description as Product_Descritpion,
- Types.Description as Type_Description,Category.Description as Category_Description
+ Types.Description as Type_Description,Category.Description as Category_Description,
+ Status_History.ComplaintStatusID,Status_History.StatusDate
 from Complaints_1
 LEFT JOIN Brokers ON Complaints_1.BrokerID = Brokers.BrokerID
 LEFT JOIN Customers ON Complaints_1.CustomerID = Customers.CustomerID
@@ -119,7 +124,8 @@ LEFT JOIN Products ON Complaints_1.ProductID = Products.ProductID
 LEFT JOIN Priority ON Complaints_1.ComplainPriorityID = Priority.ID
 LEFT JOIN Types ON Complaints_1.ComplainTypeID = Types.ID
 LEFT JOIN souce ON  Complaints_1.ComplainSourceID = souce.ID
-LEFT JOIN Category ON  Complaints_1.ComplainCategoryID = Category.ID;
+LEFT JOIN Category ON  Complaints_1.ComplainCategoryID = Category.ID
+LEFT JOIN Status_History ON Complaints_1.ID = Status_History.ID;
 
 Select * from MasterTable_Complaints;
 
